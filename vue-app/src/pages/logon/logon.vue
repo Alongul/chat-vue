@@ -1,15 +1,19 @@
 <template>
-  <view class="login">
-    <view class="login-top">
-      <text>注册</text>
+  <view class="logon">
+    <view class="logon-top">
+      <fui-icon
+        name="arrowleft"
+        :size="50"
+        @click="returnLogin"
+      ></fui-icon>
     </view>
-    <view class="login-center">
-      <view class="login-title">欢迎来到自由联盟</view>
-      <view class="login-name">
+    <view class="logon-center">
+      <view class="logon-title">欢迎加入自有联盟</view>
+      <view class="logon-name">
         <text>用户名</text>
         <input :maxlength="20" v-model="loginName" placeholder="请输入用户名" />
       </view>
-      <view class="login-password">
+      <view class="logon-password">
         <text>密码</text>
         <input
           class="uni-input"
@@ -19,7 +23,7 @@
           v-model="password"
         />
         <fui-icon
-          class="login-eye"
+          class="logon-eye"
           :color="eyeColor"
           name="visible"
           :size="50"
@@ -27,8 +31,8 @@
         ></fui-icon>
       </view>
     </view>
-    <view class="login-bottom">
-      <fui-button>登录</fui-button>
+    <view class="logon-bottom">
+      <fui-button>注册</fui-button>
     </view>
   </view>
 </template>
@@ -52,31 +56,33 @@ function changePassword() {
     eyeColor.value = "#333333";
   }
 }
+
+function returnLogin() {}
 </script>
 
 <style scoped lang="scss">
-.login {
+.logon {
   padding: $uni-spacing-row-base $uni-spacing-col-lg;
-  .login-center {
+  .logon-center {
     margin-top: 100rpx;
-    .login-title {
+    .logon-title {
       margin-bottom: 50rpx;
     }
     input {
       height: 80rpx;
       border-bottom: 0.5px solid $uni-border-color;
     }
-    .login-password {
+    .logon-password {
       margin-top: 50rpx;
       position: relative;
-      .login-eye {
+      .logon-eye {
         position: absolute;
         right: 10rpx;
         bottom: 15rpx;
       }
     }
   }
-  .login-bottom {
+  .logon-bottom {
     margin-top: 100rpx;
   }
 }

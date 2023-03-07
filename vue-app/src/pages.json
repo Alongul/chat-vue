@@ -1,28 +1,40 @@
 {
-	"pages": [
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "login"
-			}
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/logon/logon",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+	{
+		"path": "pages/myinfo/myinfo",
+		"style": {
+		  "navigationStyle": "custom"
 		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	},
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"fui-(.*)": "firstui-uni/firstui/fui-$1/fui-$1.vue"
-		}
-	}
+	  }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "fui-(.*)": "firstui-uni/firstui/fui-$1/fui-$1.vue"
+    }
+  }
 }
