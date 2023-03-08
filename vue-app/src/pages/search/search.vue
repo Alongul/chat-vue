@@ -1,17 +1,19 @@
 <template>
-  <view class="content">
-    <view class="top-bar">
-      <view class="top-bar-left">
-        <image src="@/static/logo.png" mode="scaleToFill" />
-      </view>
-      <view class="top-bar-center">聊天</view>
-      <view class="top-bar-right">
-        <uni-icons type="search" size="50"></uni-icons>
-        <uni-icons name="plus" :size="50"></uni-icons>
-      </view>
+  <view class="search">
+    <view class="search-top">
+      <input
+        class="search-input"
+        type="text"
+        confirm-type="search"
+        v-model="searchKey"
+        placeholder="搜索"
+        placeholder-class="input-placeholder"
+        @confirm="searchStart"
+      />
+      <text>取消</text>
     </view>
-    <scroll-view class="friend-list" scroll-y>
-      <view class="list-item" v-for="item in chatList">
+    <scroll-view class="search-bottom" scroll-y>
+      <view class="list-item" v-for="item in searchList">
         <view class="head-img">
           <text class="message-tip">{{ item.tips }}</text>
           <image src="@/static/logo.png" mode="scaleToFill" />
@@ -19,9 +21,6 @@
         <view class="message">
           <view class="friend-name">{{ item.name }}</view>
           <view class="new-message">asdf</view>
-        </view>
-        <view class="date">
-          <text>2016</text>
         </view>
       </view>
     </scroll-view>
@@ -34,9 +33,8 @@ import { onLoad } from "@dcloudio/uni-app";
 
 onLoad(() => {});
 
-function getChatList() {}
-
-const chatList = ref([
+const searchKey = ref("");
+const searchList = ref([
   {
     id: 1,
     name: "1",
@@ -60,44 +58,57 @@ const chatList = ref([
   {
     name: "1",
   },
+  {
+    name: "1",
+  },
+  {
+    name: "1",
+  },
+  {
+    name: "1",
+  },
+  {
+    name: "1",
+  },
+  {
+    name: "1",
+  },
 ]);
+
+function searchStart() {}
 </script>
 
 <style lang="scss">
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: var(--status-bar-height);
-  .top-bar {
-    height: 40px;
-    width: 100%;
-    line-height: 40px;
+.search {
+  padding: $uni-spacing-row-base 0;
+  .search-top {
     display: flex;
-    justify-content: space-between;
-    border-bottom: 0.5px solid $uni-border-color;
-    padding: 0 $uni-spacing-col-lg;
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      image {
-        width: 50rpx;
-        height: 50rpx;
-      }
+    padding: $uni-spacing-row-base $uni-spacing-row-lg;
+    .search-input {
+      flex: 1;
+      height: 60rpx;
+      background-color: $uni-bg-color;
+      margin-right: $uni-spacing-col-lg;
+      padding-left: $uni-spacing-col-lg;
+      border-radius: $uni-border-radius-base;
+    }
+    .input-placeholder {
+      font-size: 28rpx;
     }
   }
-  .friend-list {
+  .search-bottom {
     width: 100%;
+    top: 100rpx;
+    bottom: 0px;
     position: fixed;
-    top: 40px;
-    bottom: $uni-bottom-height;
+    padding: $uni-spacing-row-base $uni-spacing-row-lg;
 
     .list-item {
-      height: 60px;
+      height: 120rpx;
       display: flex;
       justify-content: flex-start;
       padding: 10rpx $uni-spacing-col-lg;
+      background-color: $uni-bg-color;
     }
     .head-img {
       display: flex;

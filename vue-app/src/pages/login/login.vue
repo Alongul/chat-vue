@@ -1,7 +1,7 @@
 <template>
   <view class="login">
     <view class="login-top">
-      <text>注册</text>
+      <text @click="toLogon">注册</text>
     </view>
     <view class="login-center">
       <view class="login-title">欢迎来到自由联盟</view>
@@ -18,13 +18,12 @@
           maxlength="20"
           v-model="password"
         />
-        <fui-icon
-          class="login-eye"
+        <uni-icons
+          type="eye"
           :color="eyeColor"
-          name="visible"
           :size="50"
           @click="changePassword"
-        ></fui-icon>
+        ></uni-icons>
       </view>
     </view>
     <view class="login-bottom">
@@ -51,6 +50,12 @@ function changePassword() {
   } else {
     eyeColor.value = "#333333";
   }
+}
+
+function toLogon() {
+  uni.navigateTo({
+    url: "/pages/logon/logon",
+  });
 }
 </script>
 

@@ -1,11 +1,7 @@
 <template>
   <view class="logon">
     <view class="logon-top">
-      <fui-icon
-        name="arrowleft"
-        :size="50"
-        @click="returnLogin"
-      ></fui-icon>
+      <uni-icons name="left" :size="50" @click="returnLogin"></uni-icons>
     </view>
     <view class="logon-center">
       <view class="logon-title">欢迎加入自有联盟</view>
@@ -22,13 +18,12 @@
           maxlength="20"
           v-model="password"
         />
-        <fui-icon
-          class="logon-eye"
+        <uni-icons
+          class="eye"
           :color="eyeColor"
-          name="visible"
           :size="50"
           @click="changePassword"
-        ></fui-icon>
+        ></uni-icons>
       </view>
     </view>
     <view class="logon-bottom">
@@ -57,7 +52,9 @@ function changePassword() {
   }
 }
 
-function returnLogin() {}
+function returnLogin() {
+  uni.navigateBack();
+}
 </script>
 
 <style scoped lang="scss">
