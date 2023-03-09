@@ -20,14 +20,15 @@
         />
         <uni-icons
           type="eye"
+          class="login-eye"
           :color="eyeColor"
-          :size="50"
+          size="25"
           @click="changePassword"
         ></uni-icons>
       </view>
     </view>
     <view class="login-bottom">
-      <fui-button>登录</fui-button>
+      <button type="primary">登录</button>
     </view>
   </view>
 </template>
@@ -62,6 +63,9 @@ function toLogon() {
 <style scoped lang="scss">
 .login {
   padding: $uni-spacing-row-base $uni-spacing-col-lg;
+  .login-top {
+    height: 50rpx;
+  }
   .login-center {
     margin-top: 100rpx;
     .login-title {

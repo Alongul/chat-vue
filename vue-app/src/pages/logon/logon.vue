@@ -1,10 +1,10 @@
 <template>
   <view class="logon">
     <view class="logon-top">
-      <uni-icons name="left" :size="50" @click="returnLogin"></uni-icons>
+      <uni-icons type="left" :size="25" @click="returnLogin"></uni-icons>
     </view>
     <view class="logon-center">
-      <view class="logon-title">欢迎加入自有联盟</view>
+      <view class="logon-title">欢迎加入自由联盟</view>
       <view class="logon-name">
         <text>用户名</text>
         <input :maxlength="20" v-model="loginName" placeholder="请输入用户名" />
@@ -27,7 +27,7 @@
       </view>
     </view>
     <view class="logon-bottom">
-      <fui-button>注册</fui-button>
+      <button type="primary">注册</button>
     </view>
   </view>
 </template>

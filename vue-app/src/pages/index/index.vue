@@ -6,8 +6,8 @@
       </view>
       <view class="top-bar-center">聊天</view>
       <view class="top-bar-right">
-        <uni-icons type="search" size="50"></uni-icons>
-        <uni-icons name="plus" :size="50"></uni-icons>
+        <uni-icons type="search" size="25"></uni-icons>
+        <uni-icons type="plus" size="25"></uni-icons>
       </view>
     </view>
     <scroll-view class="friend-list" scroll-y>
