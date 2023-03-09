@@ -1,27 +1,26 @@
 <template>
-  <view class="search">
-    <view class="search-top">
-      <input
-        class="search-input"
-        type="text"
-        confirm-type="search"
-        v-model="searchKey"
-        placeholder="搜索"
-        placeholder-class="input-placeholder"
-        @confirm="searchStart"
-      />
-      <text @click="returnBack">取消</text>
+  <view class="newlist">
+    <view class="newlist-top">
+      <view class="top-bar-left">
+        <uni-icons type="left" :size="25" @click="returnChatList"></uni-icons>
+      </view>
+      <view class="top-bar-center">新的朋友</view>
     </view>
-    <scroll-view class="search-bottom" scroll-y>
+    <scroll-view class="newlist-bottom" scroll-y>
       <view class="list-item" v-for="item in searchList">
         <view class="head-img">
-          <image src="@/static/logo.png" mode="scaleToFill" />
+          <uni-badge :text="item.tips" absolute="rightTop">
+            <image src="@/static/logo.png" mode="scaleToFill" />
+          </uni-badge>
         </view>
         <view class="message">
           <view class="friend-name">{{ item.name }}</view>
-          <view class="new-message">asdf</view>
+          <view class="introduce">asdf</view>
         </view>
-        <view> 加好友 </view>
+        <view class="operate">
+          <button size="mini">忽略</button>
+          <button size="mini" type="primary">同意</button>
+        </view>
       </view>
     </scroll-view>
   </view>
@@ -75,39 +74,30 @@ const searchList = ref([
   },
 ]);
 
-function searchStart() {}
-
-function returnBack() {
+function returnChatList() {
   uni.navigateBack();
 }
 </script>
 
 <style scoped lang="scss">
-.search {
-  .search-top {
-    display: flex;
-    align-items: center;
-    padding: 0 $uni-spacing-row-lg;
+.newlist {
+  .newlist-top {
     height: $uni-top-height;
-    .search-input {
-      flex: 1;
-      height: 60rpx;
-      background-color: $uni-bg-color;
-      margin-right: $uni-spacing-col-lg;
-      padding-left: $uni-spacing-col-lg;
-      border-radius: $uni-border-radius-base;
+    line-height: $uni-top-height;
+    width: 100%;
+    border-bottom: 0.5px solid $uni-border-color;
+    padding: 0 $uni-spacing-col-lg;
+    .top-bar-left {
+      float: left;
     }
-    .input-placeholder {
-      font-size: 28rpx;
+    .top-bar-center {
+      text-align: center;
     }
   }
-  .search-bottom {
-    width: 100%;
-    top: $uni-top-height;
-    bottom: 0px;
+  .newlist-bottom {
     position: fixed;
-    padding: $uni-spacing-row-sm 0;
-
+    top: $uni-top-height;
+    bottom: 0;
     .list-item {
       height: 120rpx;
       display: flex;
@@ -125,9 +115,14 @@ function returnBack() {
       }
       .message {
         margin-left: 60rpx;
-        .new-message {
+        .introduce {
           margin-top: 10rpx;
         }
+      }
+      .operate {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
       }
     }
   }

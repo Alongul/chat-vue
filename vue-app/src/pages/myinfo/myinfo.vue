@@ -23,7 +23,7 @@ import { onLoad } from "@dcloudio/uni-app";
 onLoad(() => {});
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .myinfo {
   .myinfo-top {
     padding: 80rpx $uni-spacing-col-lg;

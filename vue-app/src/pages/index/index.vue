@@ -1,17 +1,14 @@
 <template>
   <view class="content">
     <view class="top-bar">
-      <view class="top-bar-left">
-        <image src="@/static/logo.png" mode="scaleToFill" />
-      </view>
       <view class="top-bar-center">聊天</view>
       <view class="top-bar-right">
-        <uni-icons type="search" size="25"></uni-icons>
+        <uni-icons type="search" size="25" @click="toSearch"></uni-icons>
         <uni-icons type="plus" size="25"></uni-icons>
       </view>
     </view>
     <scroll-view class="friend-list" scroll-y>
-      <view class="list-item" v-for="item in chatList">
+      <view class="list-item" v-for="item in chatList" @click="toChat">
         <view class="head-img">
           <text class="message-tip">{{ item.tips }}</text>
           <image src="@/static/logo.png" mode="scaleToFill" />
@@ -33,9 +30,6 @@ import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 
 onLoad(() => {});
-
-function getChatList() {}
-
 const chatList = ref([
   {
     id: 1,
@@ -61,9 +55,23 @@ const chatList = ref([
     name: "1",
   },
 ]);
+
+function getChatList() {}
+
+function toChat() {
+  uni.navigateTo({
+    url: "/pages/chatroom/chatroom",
+  });
+}
+
+function toSearch() {
+  uni.navigateTo({
+    url: "/pages/search/search",
+  });
+}
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .content {
   display: flex;
   flex-direction: column;
@@ -71,30 +79,31 @@ const chatList = ref([
   justify-content: center;
   padding-top: var(--status-bar-height);
   .top-bar {
-    height: 40px;
+    position: relative;
+    height: $uni-top-height;
     width: 100%;
-    line-height: 40px;
-    display: flex;
-    justify-content: space-between;
+    line-height: $uni-top-height;
     border-bottom: 0.5px solid $uni-border-color;
     padding: 0 $uni-spacing-col-lg;
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      image {
-        width: 50rpx;
-        height: 50rpx;
-      }
+    .top-bar-center {
+      text-align: center;
+    }
+    .top-bar-right {
+      height: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
   }
   .friend-list {
     width: 100%;
     position: fixed;
-    top: 40px;
+    top: $uni-top-height;
     bottom: $uni-bottom-height;
+    background-color: $uni-bg-color;
 
     .list-item {
-      height: 60px;
+      height: 120rpx;
       display: flex;
       justify-content: flex-start;
       padding: 10rpx $uni-spacing-col-lg;

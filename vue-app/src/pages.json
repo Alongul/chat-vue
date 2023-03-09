@@ -29,6 +29,18 @@
       "style": {
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/newlist/newlist",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/chatroom/chatroom",
+      "style": {
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {
@@ -42,5 +54,18 @@
     "custom": {
       "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
     }
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#f8f8f8",
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "聊天"
+    }, {
+      "pagePath": "pages/myinfo/myinfo",
+      "text": "我"
+    }]
   }
 }
