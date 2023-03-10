@@ -1,13 +1,13 @@
 {
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "pages/login/login",
       "style": {
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/login/login",
+      "path": "pages/index/index",
       "style": {
         "navigationStyle": "custom"
       }
@@ -60,12 +60,15 @@
     "selectedColor": "#3cc51f",
     "borderStyle": "black",
     "backgroundColor": "#f8f8f8",
-    "list": [{
-      "pagePath": "pages/index/index",
-      "text": "聊天"
-    }, {
-      "pagePath": "pages/myinfo/myinfo",
-      "text": "我"
-    }]
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "聊天"
+      },
+      {
+        "pagePath": "pages/myinfo/myinfo",
+        "text": "我"
+      }
+    ]
   }
 }

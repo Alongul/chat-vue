@@ -6,11 +6,9 @@
     <view class="login-center">
       <view class="login-title">欢迎来到自由联盟</view>
       <view class="login-name">
-        <text>用户名</text>
         <input :maxlength="20" v-model="loginName" placeholder="请输入用户名" />
       </view>
       <view class="login-password">
-        <text>密码</text>
         <input
           class="uni-input"
           placeholder="请输入密码"
@@ -28,7 +26,7 @@
       </view>
     </view>
     <view class="login-bottom">
-      <button type="primary">登录</button>
+      <button type="primary" @click="toLogin">登录</button>
     </view>
   </view>
 </template>
@@ -51,6 +49,26 @@ function changePassword() {
   } else {
     eyeColor.value = "#333333";
   }
+}
+
+function toLogin() {
+  uni.request({
+    url: "/api/login",
+    method: "POST",
+    data: {
+      name: loginName.value,
+      password: password.value,
+    },
+    header: {
+      "content-type": "application/json",
+    },
+    success: (res) => {
+      console.log(res);
+    },
+    fail: (err) => {
+      
+    },
+  });
 }
 
 function toLogon() {

@@ -6,11 +6,9 @@
     <view class="logon-center">
       <view class="logon-title">欢迎加入自由联盟</view>
       <view class="logon-name">
-        <text>用户名</text>
         <input :maxlength="20" v-model="loginName" placeholder="请输入用户名" />
       </view>
       <view class="logon-password">
-        <text>密码</text>
         <input
           class="uni-input"
           placeholder="请输入密码"
@@ -19,15 +17,17 @@
           v-model="password"
         />
         <uni-icons
-          class="eye"
+          type="eye"
+          class="logon-eye"
           :color="eyeColor"
-          :size="50"
+          :size="25"
           @click="changePassword"
         ></uni-icons>
       </view>
+      <view class="logon-tip" v-if="logonTips">{{ logonTips }}</view>
     </view>
     <view class="logon-bottom">
-      <button type="primary">注册</button>
+      <button type="primary" @click="toLogon">注册</button>
     </view>
   </view>
 </template>
@@ -42,6 +42,7 @@ const loginName = ref("");
 const password = ref("");
 const showPassword = ref(true);
 const eyeColor = ref("#333333");
+const logonTips = ref("");
 
 function changePassword() {
   showPassword.value = !showPassword.value;
@@ -50,6 +51,28 @@ function changePassword() {
   } else {
     eyeColor.value = "#333333";
   }
+}
+function toLogon() {
+  uni.request({
+    url: "/api/adduser",
+    method: "POST",
+    data: {
+      name: loginName.value,
+      password: password.value,
+    },
+    header: {
+      "content-type": "application/json",
+    },
+    success: (res) => {
+      logonTips.value = "注册成功";
+      setTimeout(() => {
+        returnLogin();
+      }, 1000);
+    },
+    fail: (err) => {
+      logonTips.value = "注册失败";
+    },
+  });
 }
 
 function returnLogin() {
@@ -77,6 +100,10 @@ function returnLogin() {
         right: 10rpx;
         bottom: 15rpx;
       }
+    }
+    .logon-tip {
+      color: red;
+      margin-top: $uni-spacing-row-base;
     }
   }
   .logon-bottom {

@@ -1,35 +1,21 @@
 const express = require("express");
-const expressWs = require("express-ws");
-
 const app = express();
-expressWs(app);
 const port = 3000;
-const conArr = [];
 
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/chatdb");
-const Message = mongoose.model("messages", { name: String, message: String });
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.all("*", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
 });
-app.get("/list", (req, res) => {
-  Message.find().then((list) => {
-    res.json(list);
-  });
-});
+
+// 加载路由
+require("./router/index")(app);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
-});
-
-app.ws("/", (ws, req) => {
-  conArr.push(ws);
-  ws.on("message", function (message) {
-    const msg = new Message(JSON.parse(message));
-    msg.save();
-    for (let i = 0; i < conArr.length; i++) {
-      conArr[i].send(message);
-    }
-  });
 });
