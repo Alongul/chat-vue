@@ -21,7 +21,9 @@
           <view class="friend-name">{{ item.name }}</view>
           <view class="new-message">asdf</view>
         </view>
-        <view> 加好友 </view>
+        <view class="operate">
+          <button class="add-friend" type="primary">加好友</button>
+        </view>
       </view>
     </scroll-view>
   </view>
@@ -112,7 +114,7 @@ function returnBack() {
       height: 120rpx;
       display: flex;
       justify-content: flex-start;
-      padding: 10rpx $uni-spacing-col-lg;
+      padding: 15rpx $uni-spacing-col-lg;
       background-color: $uni-bg-color;
       .head-img {
         display: flex;
@@ -126,7 +128,18 @@ function returnBack() {
       .message {
         margin-left: 60rpx;
         .new-message {
-          margin-top: 10rpx;
+          // margin-top: 10rpx;
+        }
+      }
+      .operate {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        .add-friend {
+          font-size: $uni-font-size-sm;
+          height: 50rpx;
+          line-height: 50rpx;
+          border-radius: $uni-border-radius-lg;
         }
       }
     }
