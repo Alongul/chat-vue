@@ -13,4 +13,7 @@ module.exports = function (app) {
   app.post("/login", (req, res) => {
     dbserver.userLogin(req.body, res);
   });
+  app.post("/searchusers", (req, res) => {
+    dbserver.searchUsers(req.body.nam, res);
+  });
 };

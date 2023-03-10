@@ -4,6 +4,7 @@ const UserModel = require("../model/dbmodel").UserModel;
 const FriendsModel = require("../model/dbmodel").FriendsModel;
 const MessageModel = require("../model/dbmodel").MessageModel;
 
+// 新增用户
 exports.addUser = function (user, res) {
   user.password = bcrypt.encrypt(user.password);
   UserModel.count({ name: user.name }).then((count) => {
@@ -29,6 +30,8 @@ exports.addUser = function (user, res) {
     }
   });
 };
+
+// 用户登录
 exports.userLogin = function (user, res) {
   UserModel.findOne({ name: user.name })
     .then((doc) => {
@@ -50,4 +53,27 @@ exports.userLogin = function (user, res) {
         message: "用户不存在",
       });
     });
+};
+
+// 查找用户
+exports.searchUsers = function (name, res) {
+  UserModel.find({ name })
+    .then((docs) => {
+      res.send({
+        code: 200,
+        message: "登录成功",
+        data: docs,
+      });
+    })
+    .catch(() => {
+      res.send({
+        code: 500,
+        message: "用户不存在",
+      });
+    });
+};
+
+// 发起好友请求
+exports.friendReq = function (user, friend, res) {
+  
 };
