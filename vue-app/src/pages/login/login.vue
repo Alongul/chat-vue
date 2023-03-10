@@ -24,6 +24,7 @@
           @click="changePassword"
         ></uni-icons>
       </view>
+      <view class="login-tip" v-if="logonTips">{{ logonTips }}</view>
     </view>
     <view class="login-bottom">
       <button type="primary" @click="toLogin">登录</button>
@@ -34,6 +35,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
+import type { ResCommon, UniappRes } from "@/common/types";
 
 onLoad(() => {});
 
@@ -41,6 +43,7 @@ const loginName = ref("");
 const password = ref("");
 const showPassword = ref(true);
 const eyeColor = ref("#333333");
+const logonTips = ref("");
 
 function changePassword() {
   showPassword.value = !showPassword.value;
@@ -63,11 +66,15 @@ function toLogin() {
       "content-type": "application/json",
     },
     success: (res) => {
-      console.log(res);
+      const resData = res.data as ResCommon;
+      logonTips.value = resData.message;
+      if (resData.code === 200) {
+        uni.switchTab({
+          url: "/pages/index/index",
+        });
+      }
     },
-    fail: (err) => {
-      
-    },
+    fail: (err) => {},
   });
 }
 
@@ -85,6 +92,7 @@ function toLogon() {
     height: 50rpx;
   }
   .login-center {
+    height: 400rpx;
     margin-top: 100rpx;
     .login-title {
       margin-bottom: 50rpx;
@@ -102,9 +110,12 @@ function toLogon() {
         bottom: 15rpx;
       }
     }
+    .login-tip {
+      color: red;
+      margin-top: $uni-spacing-row-base;
+    }
   }
   .login-bottom {
-    margin-top: 100rpx;
   }
 }
 </style>

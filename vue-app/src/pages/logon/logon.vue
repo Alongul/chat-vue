@@ -64,10 +64,13 @@ function toLogon() {
       "content-type": "application/json",
     },
     success: (res) => {
-      logonTips.value = "注册成功";
-      setTimeout(() => {
-        returnLogin();
-      }, 1000);
+      const resData = JSON.parse(res.data as string);
+      logonTips.value = resData.message;
+      if (resData.code === 200) {
+        setTimeout(() => {
+          returnLogin();
+        }, 1000);
+      }
     },
     fail: (err) => {
       logonTips.value = "注册失败";

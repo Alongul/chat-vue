@@ -11,6 +11,6 @@ module.exports = function (app) {
     dbserver.addUser(user, res);
   });
   app.post("/login", (req, res) => {
-    dbserver.FindUserByName(req.body, res);
+    dbserver.userLogin(req.body, res);
   });
 };
