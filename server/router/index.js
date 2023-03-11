@@ -9,11 +9,11 @@ module.exports = function (app) {
       imgUrl: "",
     };
     dbserver.addUser(user, res);
-  });
+  })
   app.post("/login", (req, res) => {
     dbserver.userLogin(req.body, res);
   });
   app.post("/searchusers", (req, res) => {
-    dbserver.searchUsers(req.body.nam, res);
+    dbserver.searchUsers(req.body.name, res);
   });
 };

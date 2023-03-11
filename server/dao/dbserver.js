@@ -73,7 +73,10 @@ exports.searchUsers = function (name, res) {
     });
 };
 
-// 发起好友请求
-exports.friendReq = function (user, friend, res) {
+// 用户验证
+exports.userMatch = function (user, pwd, res) {
   
 };
+
+// 发起好友请求
+exports.friendReq = function (user, friend, res) {};
