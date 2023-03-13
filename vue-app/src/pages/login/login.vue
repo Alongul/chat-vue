@@ -36,6 +36,7 @@
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import type { ResCommon, UniappRes } from "@/common/types";
+import { setCookie } from "@/utils";
 
 onLoad(() => {});
 
@@ -66,9 +67,14 @@ function toLogin() {
       "content-type": "application/json",
     },
     success: (res) => {
-      const resData = res.data as ResCommon;
+      const resData = res.data as ResCommon<{
+        name: string;
+        token: string;
+        imgUrl: string;
+      }>;
       logonTips.value = resData.message;
       if (resData.code === 200) {
+        setCookie("token", resData.data.token);
         uni.switchTab({
           url: "/pages/index/index",
         });

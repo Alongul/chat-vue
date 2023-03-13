@@ -1,4 +1,5 @@
 const bcrypt = require("../utils/bcrypt");
+const jwt = require("../utils/jwt");
 
 const UserModel = require("../model/dbmodel").UserModel;
 const FriendsModel = require("../model/dbmodel").FriendsModel;
@@ -36,9 +37,15 @@ exports.userLogin = function (user, res) {
   UserModel.findOne({ name: user.name })
     .then((doc) => {
       if (bcrypt.verification(user.password, doc.password)) {
+        const token = jwt.generateToken(doc.id);
         res.send({
           code: 200,
           message: "登录成功",
+          data: {
+            name: doc.name,
+            imgUrl: doc.imgUrl,
+            token,
+          },
         });
       } else {
         res.send({
@@ -62,7 +69,13 @@ exports.searchUsers = function (name, res) {
       res.send({
         code: 200,
         message: "登录成功",
-        data: docs,
+        data: docs.map((item) => {
+          return {
+            name: item.name,
+            imgUrl: item.imgUrl,
+            introduce: item.introduce,
+          };
+        }),
       });
     })
     .catch(() => {
@@ -71,11 +84,6 @@ exports.searchUsers = function (name, res) {
         message: "用户不存在",
       });
     });
-};
-
-// 用户验证
-exports.userMatch = function (user, pwd, res) {
-  
 };
 
 // 发起好友请求

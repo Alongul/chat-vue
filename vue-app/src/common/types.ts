@@ -1,11 +1,12 @@
-export interface ResCommon {
+export interface ResCommon<T> {
   code: number;
   message: string;
+  data:T;
 }
 
-export interface UniappRes {
+export interface UniappRes<T> {
   cookies: string[];
   header: Object;
-  data: ResCommon;
+  data: ResCommon<T>;
   statusCode: number;
 }

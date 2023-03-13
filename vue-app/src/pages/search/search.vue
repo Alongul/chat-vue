@@ -13,13 +13,17 @@
       <text @click="returnBack">取消</text>
     </view>
     <scroll-view class="search-bottom" scroll-y>
-      <view class="list-item" v-for="item in searchList">
+      <view
+        class="list-item"
+        v-for="(item, index) in searchList"
+        :key="item.name"
+      >
         <view class="head-img">
           <image src="@/static/logo.png" mode="scaleToFill" />
         </view>
         <view class="message">
           <view class="friend-name">{{ item.name }}</view>
-          <view class="new-message">asdf</view>
+          <view class="new-message">{{ item.introduce }}</view>
         </view>
         <view class="operate">
           <button class="add-friend" type="primary">加好友</button>
@@ -32,52 +36,41 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
+import type { ResCommon } from "@/common/types";
+import type { SearchItem } from "./search-type";
 
 onLoad(() => {});
 
 const searchKey = ref("");
-const searchList = ref([
-  {
-    id: 1,
-    name: "1",
-    news: "",
-    date: new Date(),
-    tips: 2,
-    imgUrl: "",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-]);
+const searchList = ref<SearchItem[]>([]);
 
-function searchStart() {}
+function searchStart() {
+  searchList.value = [
+    {
+      name: "1",
+      introduce: "2",
+      imgUrl: "",
+    },
+  ];
+  // uni.request({
+  //   url: "/api/searchusers",
+  //   method: "POST",
+  //   data: {
+  //     name: searchKey.value,
+  //   },
+  //   header: {
+  //     "content-type": "application/json",
+  //   },
+  //   success: (res) => {
+  //     const resData = res.data as ResCommon<SearchItem[]>;
+  //     if (resData.code === 200) {
+  //       searchList.value = resData.data;
+  //       console.log(searchList);
+  //     }
+  //   },
+  //   fail: (err) => {},
+  // });
+}
 
 function returnBack() {
   uni.navigateBack();
