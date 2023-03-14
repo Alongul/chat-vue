@@ -62,15 +62,16 @@ exports.userLogin = function (user, res) {
     });
 };
 
-// 查找用户
-exports.searchUsers = function (name, res) {
-  UserModel.find({ name })
+// 查找所有用户
+exports.searchUsers = function (key, res) {
+  UserModel.find({ name: new RegExp(key) })
     .then((docs) => {
       res.send({
         code: 200,
-        message: "登录成功",
+        message: "查找成功",
         data: docs.map((item) => {
           return {
+            id: item.id,
             name: item.name,
             imgUrl: item.imgUrl,
             introduce: item.introduce,
@@ -81,10 +82,133 @@ exports.searchUsers = function (name, res) {
     .catch(() => {
       res.send({
         code: 500,
-        message: "用户不存在",
+        message: "查找失败",
+      });
+    });
+};
+
+// 查找好友
+exports.searchFriends = function (clientId, res) {
+  FriendsModel.find({ state: "1" })
+    .or([{ userId: clientId }, { friendId: clientId }])
+    .populate(["userId", "friendId"])
+    .then((docs) => {
+      res.send({
+        code: 200,
+        message: "查找成功",
+        data: docs.map((item) => {
+          if (item.userId._id === clientId) {
+            return {
+              id: item._id,
+              friendId: item.friendId._id,
+              name: item.friendId.name,
+              imgUrl: item.friendId.imgUrl,
+              introduce: item.friendId.introduce,
+            };
+          } else {
+            return {
+              id: item._id,
+              friendId: item.userId._id,
+              name: item.userId.name,
+              imgUrl: item.userId.imgUrl,
+              introduce: item.userId.introduce,
+            };
+          }
+        }),
+      });
+    })
+    .catch(() => {
+      res.send({
+        code: 500,
+        message: "查找失败",
+      });
+    });
+};
+
+// 查找新朋友
+exports.querynewfriends = function (clientId, res) {
+  FriendsModel.find({ state: "0" })
+    .or([{ userId: clientId }, { friendId: clientId }])
+    .populate(["userId", "friendId"])
+    .then((docs) => {
+      res.send({
+        code: 200,
+        message: "查找成功",
+        data: docs.map((item) => {
+          if (item.userId._id === clientId) {
+            return {
+              id: item._id,
+              friendId: item.friendId._id,
+              name: item.friendId.name,
+              imgUrl: item.friendId.imgUrl,
+              introduce: item.friendId.introduce,
+            };
+          } else {
+            return {
+              id: item._id,
+              friendId: item.userId._id,
+              name: item.userId.name,
+              imgUrl: item.userId.imgUrl,
+              introduce: item.userId.introduce,
+            };
+          }
+        }),
+      });
+    })
+    .catch(() => {
+      res.send({
+        code: 500,
+        message: "查找失败",
       });
     });
 };
 
 // 发起好友请求
-exports.friendReq = function (user, friend, res) {};
+exports.friendReq = function (friendId, userId, res, connectMap) {
+  FriendsModel.create({
+    userId,
+    friendId,
+    state: "0",
+    time: new Date(),
+  })
+    .then((doc) => {
+      console.log();
+      // connectMap.get(friendId).send({
+      //   message: "新的朋友",
+      //   userId: friendId,
+      //   friendId: userId,
+      // });
+      res.send({
+        code: 200,
+        message: "发起成功",
+      });
+    })
+    .catch(() => {
+      res.send({
+        code: 500,
+        message: "发起失败",
+      });
+    });
+};
+
+// 同意或者拒绝好友请求
+exports.operateReq = function (id, res) {
+  FriendsModel.updateOne(
+    {
+      _id: id,
+    },
+    { state: "1" }
+  )
+    .then(() => {
+      res.send({
+        code: 200,
+        message: "成功",
+      });
+    })
+    .catch(() => {
+      res.send({
+        code: 500,
+        message: "网络失败",
+      });
+    });
+};

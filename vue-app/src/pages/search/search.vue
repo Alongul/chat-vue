@@ -12,7 +12,7 @@
       />
       <text @click="returnBack">取消</text>
     </view>
-    <scroll-view class="search-bottom" scroll-y>
+    <view class="search-bottom">
       <view
         class="list-item"
         v-for="(item, index) in searchList"
@@ -26,18 +26,21 @@
           <view class="new-message">{{ item.introduce }}</view>
         </view>
         <view class="operate">
-          <button class="add-friend" type="primary">加好友</button>
+          <button class="add-friend" type="primary" @click="addFriend(item.id)">
+            加好友
+          </button>
         </view>
       </view>
-    </scroll-view>
+    </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onUpdated } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import type { ResCommon } from "@/common/types";
 import type { SearchItem } from "./search-type";
+import { watch } from "vue";
 
 onLoad(() => {});
 
@@ -45,31 +48,45 @@ const searchKey = ref("");
 const searchList = ref<SearchItem[]>([]);
 
 function searchStart() {
-  searchList.value = [
-    {
-      name: "1",
-      introduce: "2",
-      imgUrl: "",
+  if (searchKey.value === "") {
+    searchList.value = [];
+    return;
+  }
+  uni.request({
+    url: "/api/searchusers",
+    method: "POST",
+    data: {
+      name: searchKey.value,
     },
-  ];
-  // uni.request({
-  //   url: "/api/searchusers",
-  //   method: "POST",
-  //   data: {
-  //     name: searchKey.value,
-  //   },
-  //   header: {
-  //     "content-type": "application/json",
-  //   },
-  //   success: (res) => {
-  //     const resData = res.data as ResCommon<SearchItem[]>;
-  //     if (resData.code === 200) {
-  //       searchList.value = resData.data;
-  //       console.log(searchList);
-  //     }
-  //   },
-  //   fail: (err) => {},
-  // });
+    header: {
+      "content-type": "application/json",
+    },
+    success: (res) => {
+      const resData = res.data as ResCommon<SearchItem[]>;
+      if (resData.code === 200) {
+        searchList.value = resData.data;
+      }
+    },
+    fail: (err) => {},
+  });
+}
+
+function addFriend(id: string) {
+  uni.request({
+    url: "/api/reqfriend",
+    method: "POST",
+    data: {
+      id,
+    },
+    header: {
+      "content-type": "application/json",
+    },
+    success: (res) => {
+      const resData = res.data as ResCommon<SearchItem[]>;
+      console.log(res.data);
+    },
+    fail: (err) => {},
+  });
 }
 
 function returnBack() {
@@ -100,6 +117,7 @@ function returnBack() {
     width: 100%;
     top: $uni-top-height;
     bottom: 0px;
+    overflow-y: auto;
     position: fixed;
     padding: $uni-spacing-row-sm 0;
 

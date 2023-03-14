@@ -7,7 +7,7 @@
         <uni-icons type="plus" size="25"></uni-icons>
       </view>
     </view>
-    <scroll-view class="friend-list" scroll-y>
+    <scroll-view class="session-list" scroll-y>
       <view class="list-item" v-for="item in chatList" @click="toChat">
         <view class="head-img">
           <text class="message-tip">{{ item.tips }}</text>
@@ -27,8 +27,20 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onReady } from "@dcloudio/uni-app";
 
+onReady(() => {
+  const ws = new WebSocket("ws://localhost:3000/");
+  ws.onopen = function () {
+    console.log("成功");
+  };
+  ws.onerror = function () {
+    console.log("失败");
+  };
+  ws.onmessage = function (event) {
+    console.log('消息');
+  };
+});
 onLoad(() => {});
 const chatList = ref([
   {
@@ -38,21 +50,6 @@ const chatList = ref([
     date: new Date(),
     tips: 2,
     imgUrl: "",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
-  },
-  {
-    name: "1",
   },
 ]);
 
@@ -95,7 +92,7 @@ function toSearch() {
       top: 0;
     }
   }
-  .friend-list {
+  .session-list {
     width: 100%;
     position: fixed;
     top: $uni-top-height;

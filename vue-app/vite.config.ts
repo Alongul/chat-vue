@@ -5,7 +5,7 @@ import uni from "@dcloudio/vite-plugin-uni";
 export default defineConfig({
   plugins: [uni()],
   server: {
-    port: 8080,
+    port: 8082,
     proxy: {
       "/api": {
         target: "http://localhost:3000",

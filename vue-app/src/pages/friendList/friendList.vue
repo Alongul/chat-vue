@@ -1,24 +1,31 @@
 <template>
-  <view class="newlist">
-    <view class="newlist-top">
-      <view class="top-bar-left">
-        <uni-icons type="left" :size="25" @click="returnChatList"></uni-icons>
+  <view class="friendList">
+    <view class="top-bar">
+      <view class="top-bar-center">通讯录</view>
+      <view class="top-bar-right">
+        <uni-icons type="search" size="25" @click="toSearch"></uni-icons>
+        <uni-icons type="plus" size="25"></uni-icons>
       </view>
-      <view class="top-bar-center">新的朋友</view>
     </view>
-    <view class="newlist-bottom">
-      <view class="list-item" v-for="item in newList">
+    <view class="list-container">
+      <view class="list-item" @click="toNewList">
+        <view class="head-img">
+          <image src="@/static/logo.png" mode="scaleToFill" />
+        </view>
+        <view class="message">
+          <view class="friend-name">新的朋友</view>
+        </view>
+      </view>
+      <view
+        class="list-item"
+        v-for="(item, index) in friendList"
+        :key="item.name"
+      >
         <view class="head-img">
           <image src="@/static/logo.png" mode="scaleToFill" />
         </view>
         <view class="message">
           <view class="friend-name">{{ item.name }}</view>
-          <view class="introduce">{{ item.introduce }}</view>
-        </view>
-        <view class="operate">
-          <button size="mini" type="primary" @click="agreeReq(item.id)">
-            同意
-          </button>
         </view>
       </view>
     </view>
@@ -38,16 +45,15 @@ interface Friend {
   introduce: string;
   state: string; // 0:请求中；1:已是好友
 }
-
 onShow(() => {
-  searchNewFriends();
+  searchFriends();
 });
 
-const newList = ref<Friend[]>([]);
+const friendList = ref<Friend[]>([]);
 
-function searchNewFriends() {
+function searchFriends() {
   uni.request({
-    url: "/api/querynewfriends",
+    url: "/api/searchfriends",
     method: "POST",
     header: {
       "content-type": "application/json",
@@ -55,59 +61,51 @@ function searchNewFriends() {
     success: (res) => {
       const resData = res.data as ResCommon<Friend[]>;
       if (resData.code === 200) {
-        newList.value = resData.data;
+        friendList.value = resData.data;
       }
     },
     fail: (err) => {},
   });
 }
 
-function agreeReq(id: string) {
-  uni.request({
-    url: "/api/agree",
-    method: "POST",
-    header: {
-      "content-type": "application/json",
-    },
-    data: {
-      id,
-    },
-    success: (res) => {
-      const resData = res.data as ResCommon<Friend[]>;
-      if (resData.code === 200) {
-        newList.value = resData.data;
-      }
-    },
-    fail: (err) => {},
+function toNewList() {
+  uni.navigateTo({
+    url: "/pages/newlist/newlist",
   });
 }
 
-function returnChatList() {
-  uni.navigateBack();
+function toSearch() {
+  uni.navigateTo({
+    url: "/pages/search/search",
+  });
 }
 </script>
 
 <style scoped lang="scss">
-.newlist {
-  .newlist-top {
+.friendList {
+  .top-bar {
+    position: relative;
     height: $uni-top-height;
-    line-height: $uni-top-height;
     width: 100%;
+    line-height: $uni-top-height;
     border-bottom: 0.5px solid $uni-border-color;
     padding: 0 $uni-spacing-col-lg;
-    .top-bar-left {
-      float: left;
-    }
     .top-bar-center {
       text-align: center;
     }
+    .top-bar-right {
+      height: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
   }
-  .newlist-bottom {
+  .list-container {
     width: 100%;
-    position: fixed;
     top: $uni-top-height;
+    bottom: 0px;
     overflow-y: auto;
-    bottom: 0;
+    position: fixed;
     .list-item {
       height: 120rpx;
       display: flex;
@@ -126,14 +124,6 @@ function returnChatList() {
       .message {
         margin-left: 60rpx;
         line-height: 100rpx;
-        .introduce {
-          margin-top: 10rpx;
-        }
-      }
-      .operate {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
       }
     }
   }

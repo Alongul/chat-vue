@@ -9,6 +9,6 @@ exports.generateToken = function (id) {
 };
 
 exports.verifyToken = function (e) {
-  const payload = jwt.verify(e);
+  const payload = jwt.verify(e, secret);
   return payload;
 };

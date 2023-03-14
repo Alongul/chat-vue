@@ -41,6 +41,12 @@
       "style": {
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/friendList/friendList",
+      "style": {
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {
@@ -64,6 +70,10 @@
       {
         "pagePath": "pages/index/index",
         "text": "聊天"
+      },
+      {
+        "pagePath": "pages/friendList/friendList",
+        "text": "通讯录"
       },
       {
         "pagePath": "pages/myinfo/myinfo",
