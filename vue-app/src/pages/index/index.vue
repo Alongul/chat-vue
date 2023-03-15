@@ -7,27 +7,35 @@
         <uni-icons type="plus" size="25"></uni-icons>
       </view>
     </view>
-    <scroll-view class="session-list" scroll-y>
+    <view class="session-list">
       <view class="list-item" v-for="item in chatList" @click="toChat">
         <view class="head-img">
-          <text class="message-tip">{{ item.tips }}</text>
           <image src="@/static/logo.png" mode="scaleToFill" />
         </view>
         <view class="message">
           <view class="friend-name">{{ item.name }}</view>
-          <view class="new-message">asdf</view>
+          <view class="new-message">{{ item.latestMsg }}</view>
         </view>
         <view class="date">
-          <text>2016</text>
+          <text>{{ format(new Date(item.time), "HH:mm") }}</text>
         </view>
       </view>
-    </scroll-view>
+    </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { onLoad, onReady } from "@dcloudio/uni-app";
+import { onShow, onReady } from "@dcloudio/uni-app";
+import type { ResCommon } from "@/common/types";
+import { format } from "date-fns";
+
+interface SessionItem {
+  name: string;
+  latestMsg: string;
+  time: string;
+  imgUrl: string;
+}
 
 onReady(() => {
   const ws = new WebSocket("ws://localhost:3000/");
@@ -38,22 +46,31 @@ onReady(() => {
     console.log("失败");
   };
   ws.onmessage = function (event) {
-    console.log('消息');
+    console.log("消息");
   };
 });
-onLoad(() => {});
-const chatList = ref([
-  {
-    id: 1,
-    name: "1",
-    news: "",
-    date: new Date(),
-    tips: 2,
-    imgUrl: "",
-  },
-]);
+onShow(() => {
+  getChatList();
+});
 
-function getChatList() {}
+const chatList = ref<SessionItem[]>([]);
+
+function getChatList() {
+  uni.request({
+    url: "/api/querysessionlist",
+    method: "POST",
+    header: {
+      "content-type": "application/json",
+    },
+    success: (res) => {
+      const resData = res.data as ResCommon<SessionItem[]>;
+      if (resData.code === 200) {
+        chatList.value = resData.data;
+      }
+    },
+    fail: (err) => {},
+  });
+}
 
 function toChat() {
   uni.navigateTo({
@@ -95,12 +112,13 @@ function toSearch() {
   .session-list {
     width: 100%;
     position: fixed;
+    overflow-y: auto;
     top: $uni-top-height;
     bottom: $uni-bottom-height;
     background-color: $uni-bg-color;
 
     .list-item {
-      height: 120rpx;
+      height: $uni-list-height;
       display: flex;
       justify-content: flex-start;
       padding: 10rpx $uni-spacing-col-lg;
@@ -109,22 +127,9 @@ function toSearch() {
       display: flex;
       align-items: center;
       position: relative;
-      .message-tip {
-        position: absolute;
-        z-index: 2;
-        height: 36rpx;
-        min-width: 36rpx;
-        border-radius: 36rpx;
-        background-color: red;
-        color: white;
-        text-align: center;
-        line-height: 36rpx;
-        right: -2px;
-        top: 0px;
-      }
       image {
-        width: 60rpx;
-        height: 60rpx;
+        width: $uni-img-size-lg;
+        height: $uni-img-size-lg;
       }
     }
     .message {

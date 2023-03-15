@@ -20,3 +20,5 @@ export function getCookie(key: string): string | undefined {
     return decodeURIComponent(match[2]);
   }
 }
+
+

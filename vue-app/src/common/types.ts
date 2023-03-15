@@ -1,7 +1,7 @@
 export interface ResCommon<T> {
   code: number;
   message: string;
-  data:T;
+  data: T;
 }
 
 export interface UniappRes<T> {

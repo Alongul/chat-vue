@@ -4,6 +4,7 @@ const jwt = require("../utils/jwt");
 const UserModel = require("../model/dbmodel").UserModel;
 const FriendsModel = require("../model/dbmodel").FriendsModel;
 const MessageModel = require("../model/dbmodel").MessageModel;
+const SessionModel = require("../model/dbmodel").SessionModel;
 
 // 新增用户
 exports.addUser = function (user, res) {
@@ -97,7 +98,7 @@ exports.searchFriends = function (clientId, res) {
         code: 200,
         message: "查找成功",
         data: docs.map((item) => {
-          if (item.userId._id === clientId) {
+          if (item.userId._id.toString() === clientId) {
             return {
               id: item._id,
               friendId: item.friendId._id,
@@ -172,7 +173,6 @@ exports.friendReq = function (friendId, userId, res, connectMap) {
     time: new Date(),
   })
     .then((doc) => {
-      console.log();
       // connectMap.get(friendId).send({
       //   message: "新的朋友",
       //   userId: friendId,
@@ -191,7 +191,7 @@ exports.friendReq = function (friendId, userId, res, connectMap) {
     });
 };
 
-// 同意或者拒绝好友请求
+// 同意好友请求
 exports.operateReq = function (id, res) {
   FriendsModel.updateOne(
     {
@@ -209,6 +209,68 @@ exports.operateReq = function (id, res) {
       res.send({
         code: 500,
         message: "网络失败",
+      });
+    });
+};
+
+// 创建一个新的会话
+exports.openSesssion = function (friendId, clientId, res) {
+  console.log(friendId, clientId);
+  SessionModel.create({
+    users: [clientId, friendId],
+    latestMsg: "",
+    time: new Date(),
+  })
+    .then((doc) => {
+      res.send({
+        code: 200,
+        message: "创建成功",
+        data: {
+          sessionId: doc._id,
+        },
+      });
+    })
+    .catch(() => {
+      res.send({
+        code: 500,
+        message: "网络异常",
+      });
+    });
+};
+
+// 查询会话列表
+exports.querySesssionList = function (clientId, res) {
+  SessionModel.find({
+    users: {
+      $elemMatch: {
+        $eq: clientId,
+      },
+    },
+  })
+    .populate("users")
+    .then((docs) => {
+      res.send({
+        code: 200,
+        message: "查询成功",
+        data: docs.map((item) => {
+          const sessionInfo = item.users.find((item) => {
+            return item._id.toString() !== clientId;
+          });
+          return {
+            id: item._id,
+            name: sessionInfo.name,
+            imgUrl: sessionInfo.imgUrl,
+            latestMsg: item.latestMsg,
+            time: item.time,
+          };
+        }),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({
+        code: 500,
+        message: "网络异常",
       });
     });
 };

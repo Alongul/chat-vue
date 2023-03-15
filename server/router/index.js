@@ -32,4 +32,12 @@ module.exports = function (app, connectMap) {
   app.post("/agree", (req, res) => {
     dbserver.operateReq(req.body.id, res);
   });
+  app.post("/opensession", (req, res) => {
+    const payload = jwt.verifyToken(req.cookies.token);
+    dbserver.openSesssion(req.body.id, payload.id, res);
+  });
+  app.post("/querysessionlist", (req, res) => {
+    const payload = jwt.verifyToken(req.cookies.token);
+    dbserver.querySesssionList(payload.id, res);
+  });
 };

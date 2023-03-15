@@ -122,7 +122,7 @@ function returnBack() {
     padding: $uni-spacing-row-sm 0;
 
     .list-item {
-      height: 120rpx;
+      height: $uni-list-height;
       display: flex;
       justify-content: flex-start;
       padding: 15rpx $uni-spacing-col-lg;
@@ -132,8 +132,8 @@ function returnBack() {
         align-items: center;
         position: relative;
         image {
-          width: 60rpx;
-          height: 60rpx;
+          width: $uni-img-size-lg;
+          height: $uni-img-size-lg;
         }
       }
       .message {

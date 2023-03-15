@@ -22,9 +22,7 @@ const FriendsModel = db.model("friends", SchemaFriends);
 
 // 会话表
 const SchemaSession = new Schema({
-  sendId: { type: Schema.Types.ObjectId, ref: UserModel },
-  receiveId: { type: Schema.Types.ObjectId, ref: UserModel },
-  unread: Number,
+  users: [{ type: Schema.Types.ObjectId, ref: UserModel }],
   latestMsg: String,
   time: Date,
 });
@@ -38,6 +36,7 @@ const SchemaMessage = new Schema({
   message: String,
   type: String,
   time: Date,
+  unread: Boolean,
 });
 const MessageModel = db.model("messages", SchemaMessage);
 

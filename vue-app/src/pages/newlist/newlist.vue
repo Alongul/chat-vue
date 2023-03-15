@@ -109,7 +109,7 @@ function returnChatList() {
     overflow-y: auto;
     bottom: 0;
     .list-item {
-      height: 120rpx;
+      height: $uni-list-height;
       display: flex;
       justify-content: flex-start;
       padding: 10rpx $uni-spacing-col-lg;

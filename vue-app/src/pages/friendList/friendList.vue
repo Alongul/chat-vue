@@ -20,6 +20,7 @@
         class="list-item"
         v-for="(item, index) in friendList"
         :key="item.name"
+        @click="openFriInfo(item)"
       >
         <view class="head-img">
           <image src="@/static/logo.png" mode="scaleToFill" />
@@ -68,6 +69,12 @@ function searchFriends() {
   });
 }
 
+function openFriInfo(item: Friend) {
+  uni.navigateTo({
+    url: `/pages/friendinfo/friendinfo?friendId=${item.friendId}&name=${item.name}&introduce=${item.introduce}`,
+  });
+}
+
 function toNewList() {
   uni.navigateTo({
     url: "/pages/newlist/newlist",
@@ -107,7 +114,7 @@ function toSearch() {
     overflow-y: auto;
     position: fixed;
     .list-item {
-      height: 120rpx;
+      height: $uni-list-height;
       display: flex;
       justify-content: flex-start;
       padding: 10rpx $uni-spacing-col-lg;
@@ -117,8 +124,8 @@ function toSearch() {
         align-items: center;
         position: relative;
         image {
-          width: 60rpx;
-          height: 60rpx;
+          width: $uni-img-size-base;
+          height: $uni-img-size-base;
         }
       }
       .message {

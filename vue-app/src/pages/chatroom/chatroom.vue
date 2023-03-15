@@ -48,7 +48,10 @@
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 
-onLoad(() => {});
+let sessionId = "";
+onLoad((data: any) => {
+  sessionId = data.sessionId;
+});
 
 const chatList = ref([
   {
@@ -76,7 +79,7 @@ const chatList = ref([
 const sendMessage = ref("");
 
 function returnChatList() {
-  uni.navigateBack();
+  uni.switchTab({ url: "/pages/index/index" });
 }
 </script>
 
