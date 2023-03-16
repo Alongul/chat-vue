@@ -40,4 +40,7 @@ module.exports = function (app, connectMap) {
     const payload = jwt.verifyToken(req.cookies.token);
     dbserver.querySesssionList(payload.id, res);
   });
+  app.post("/querymessage", (req, res) => {
+    dbserver.queryMessageList(req.body.sessionId, res);
+  });
 };

@@ -16,6 +16,7 @@ exports.addUser = function (user, res) {
           res.send({
             code: 200,
             message: "注册成功",
+            data: 1,
           });
         })
         .catch((err) => {
@@ -276,9 +277,9 @@ exports.querySesssionList = function (clientId, res) {
     });
 };
 
-// 发送消息
-exports.sendMessage = function (data, res, connectMap) {
-  MessageModel.create({
+// 保存消息
+exports.saveMessage = function (data) {
+  return MessageModel.create({
     sendId: data.sendId,
     receiveId: data.receiveId,
     sessionId: data.sessionId,
@@ -286,29 +287,28 @@ exports.sendMessage = function (data, res, connectMap) {
     type: data.type,
     time: new Date(),
     unread: "0",
+  });
+};
+
+// 查询消息
+exports.queryMessageList = function (sessionId, res) {
+  MessageModel.find({
+    sessionId,
   })
-    .then((doc) => {
-      connectMap.get(data.receiveId)?.send(
-        JSON.stringify({
-          sendId: doc.sendId,
-          receiveId: doc.receiveId,
-          sessionId: doc.sessionId,
-          message: doc.message,
-          type: doc.type,
-          time: doc.time,
-        })
-      );
+    .then((docs) => {
       res.send({
         code: 200,
         message: "发送成功",
-        data: {
-          sendId: doc.sendId,
-          receiveId: doc.receiveId,
-          sessionId: doc.sessionId,
-          message: doc.message,
-          type: doc.type,
-          time: doc.time,
-        },
+        data: docs.map((item) => {
+          return {
+            sessionId: item.sessionId,
+            sendId: item.sendId,
+            receiveId: item.receiveId,
+            message: item.message,
+            type: item.type,
+            time: item.time,
+          };
+        }),
       });
     })
     .catch((err) => {
