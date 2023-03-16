@@ -35,6 +35,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
+import type { ResCommon } from "@/common/types";
 
 onLoad(() => {});
 
@@ -64,7 +65,7 @@ function toLogon() {
       "content-type": "application/json",
     },
     success: (res) => {
-      const resData = JSON.parse(res.data as string);
+      const resData = res.data as ResCommon<number>;
       logonTips.value = resData.message;
       if (resData.code === 200) {
         setTimeout(() => {

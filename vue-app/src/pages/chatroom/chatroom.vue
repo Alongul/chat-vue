@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import { onLoad, onReady, onUnload } from "@dcloudio/uni-app";
 import type { ResCommon } from "@/common/types";
 import { useUserStore } from "../../stores/user";
@@ -48,6 +48,7 @@ import { MessageType } from "./enum";
 import { cloneDeep } from "lodash";
 
 interface Message {
+  sessionId: string;
   sendId: string;
   receiveId: string;
   message: string;
@@ -75,8 +76,8 @@ onReady(() => {
     console.log("ws消息连接失败");
   };
   ws.onmessage = function (event) {
-    console.log(event.data);
     messageList.value.push(JSON.parse(event.data));
+    toBottom();
   };
 });
 onLoad((data: any) => {
@@ -97,7 +98,6 @@ function queryMessageList() {
     method: "POST",
     data: {
       sessionId,
-      receiveId,
     },
     header: {
       "content-type": "application/json",
@@ -120,6 +120,7 @@ function sendMessage() {
       receiveId,
       message: inputMessage.value,
       type: MessageType.文本,
+      time: new Date(),
     })
   );
 }
@@ -129,6 +130,13 @@ function isMySend(id: string) {
 }
 function returnChatList() {
   uni.switchTab({ url: "/pages/index/index" });
+}
+
+function toBottom() {
+  nextTick(() => {
+    let srollArea = document.querySelector(".chatroom-area");
+    srollArea?.scrollTo(0, srollArea.clientHeight);
+  });
 }
 </script>
 
@@ -154,6 +162,9 @@ function returnChatList() {
     top: $uni-top-height;
     bottom: $uni-bottom-height;
     background-color: #f5f3e5;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .list-item {
       min-height: $uni-img-size-base;
       padding: 10rpx $uni-spacing-col-lg;

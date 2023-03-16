@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { onShow, onReady } from "@dcloudio/uni-app";
 import type { ResCommon } from "@/common/types";
 import { format } from "date-fns";
@@ -45,14 +45,13 @@ interface SessionItem {
   imgUrl: string;
 }
 
-onMounted(() => {
-  console.log(1);
-});
+let ws: WebSocket;
+const chatList = ref<SessionItem[]>([]);
 
 onReady(() => {
-  const ws = new WebSocket("ws://localhost:3000/");
+  ws = new WebSocket("ws://localhost:3000/session");
   ws.onopen = function () {
-    console.log("ws连接成功");
+    console.log("ws会话连接成功");
     ws.send(
       JSON.stringify({
         clientId: userStore.clientId,
@@ -60,17 +59,35 @@ onReady(() => {
     );
   };
   ws.onerror = function () {
-    console.log("ws连接失败");
+    console.log("ws会话连接失败");
   };
   ws.onmessage = function (event) {
     console.log(event.data);
+    // chatList.value = []
+    // chatList.value = chatList.value.map((item) => {
+    //   if (item.id === event.data.sessionId) {
+    //     return {
+    //       id: item.id,
+    //       friendId: item.friendId,
+    //       name: item.name,
+    //       latestMsg: event.data.latestMsg,
+    //       time: event.data.time,
+    //       imgUrl: "",
+    //     };
+    //   } else {
+    //     return item;
+    //   }
+    // });
   };
 });
+
+onUnmounted(() => {
+  ws.close();
+});
+
 onShow(() => {
   getChatList();
 });
-
-const chatList = ref<SessionItem[]>([]);
 
 function getChatList() {
   uni.request({

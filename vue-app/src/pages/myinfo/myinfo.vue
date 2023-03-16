@@ -5,8 +5,8 @@
         <image src="@/static/logo.png" mode="scaleToFill" />
       </view>
       <view class="myinfo-top-info">
-        <view>name</view>
-        <view>个签</view>
+        <view>{{ useStore.clientName }}</view>
+        <view></view>
       </view>
       <view></view>
     </view>
@@ -19,7 +19,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
+import { useUserStore } from "../../stores/user";
 
+const useStore = useUserStore();
 onLoad(() => {});
 </script>
 

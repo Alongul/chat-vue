@@ -26,7 +26,12 @@
           <view class="new-message">{{ item.introduce }}</view>
         </view>
         <view class="operate">
-          <button class="add-friend" type="primary" @click="addFriend(item.id)">
+          <button
+            class="add-friend"
+            type="primary"
+            v-show="item.id !== useStore.clientId"
+            @click="addFriend(item.id)"
+          >
             加好友
           </button>
         </view>
@@ -40,8 +45,9 @@ import { ref, onUpdated } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import type { ResCommon } from "@/common/types";
 import type { SearchItem } from "./search-type";
-import { watch } from "vue";
+import { useUserStore } from "../../stores/user";
 
+const useStore = useUserStore();
 onLoad(() => {});
 
 const searchKey = ref("");
