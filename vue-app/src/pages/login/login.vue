@@ -37,6 +37,8 @@ import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import type { ResCommon, UniappRes } from "@/common/types";
 import { setCookie } from "@/utils";
+import { useUserStore } from "../../stores/user";
+const userStore = useUserStore();
 
 onLoad(() => {});
 
@@ -56,6 +58,9 @@ function changePassword() {
 }
 
 function toLogin() {
+  if (loginName.value === "" || password.value === "") {
+    return;
+  }
   uni.request({
     url: "/api/login",
     method: "POST",
@@ -68,6 +73,7 @@ function toLogin() {
     },
     success: (res) => {
       const resData = res.data as ResCommon<{
+        id: string;
         name: string;
         token: string;
         imgUrl: string;
@@ -75,6 +81,11 @@ function toLogin() {
       logonTips.value = resData.message;
       if (resData.code === 200) {
         setCookie("token", resData.data.token);
+        userStore.setClientInfo({
+          id: resData.data.id,
+          name: resData.data.name,
+          imgUrl: resData.data.imgUrl,
+        });
         uni.switchTab({
           url: "/pages/index/index",
         });

@@ -8,7 +8,11 @@
       </view>
     </view>
     <view class="session-list">
-      <view class="list-item" v-for="item in chatList" @click="toChat">
+      <view
+        class="list-item"
+        v-for="item in chatList"
+        @click="toChat(item.id, item.friendId)"
+      >
         <view class="head-img">
           <image src="@/static/logo.png" mode="scaleToFill" />
         </view>
@@ -25,28 +29,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { onShow, onReady } from "@dcloudio/uni-app";
 import type { ResCommon } from "@/common/types";
 import { format } from "date-fns";
+import { useUserStore } from "../../stores/user";
+const userStore = useUserStore();
 
 interface SessionItem {
+  id: string;
+  friendId: string;
   name: string;
   latestMsg: string;
   time: string;
   imgUrl: string;
 }
 
+onMounted(() => {
+  console.log(1);
+});
+
 onReady(() => {
   const ws = new WebSocket("ws://localhost:3000/");
   ws.onopen = function () {
-    console.log("成功");
+    console.log("ws连接成功");
+    ws.send(
+      JSON.stringify({
+        clientId: userStore.clientId,
+      })
+    );
   };
   ws.onerror = function () {
-    console.log("失败");
+    console.log("ws连接失败");
   };
   ws.onmessage = function (event) {
-    console.log("消息");
+    console.log(event.data);
   };
 });
 onShow(() => {
@@ -72,9 +89,9 @@ function getChatList() {
   });
 }
 
-function toChat() {
+function toChat(sessionId: string, friendId: string) {
   uni.navigateTo({
-    url: "/pages/chatroom/chatroom",
+    url: `/pages/chatroom/chatroom?sessionId=${sessionId}&receiveId=${friendId}`,
   });
 }
 

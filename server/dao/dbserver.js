@@ -43,6 +43,7 @@ exports.userLogin = function (user, res) {
           code: 200,
           message: "登录成功",
           data: {
+            id: doc._id,
             name: doc.name,
             imgUrl: doc.imgUrl,
             token,
@@ -215,7 +216,6 @@ exports.operateReq = function (id, res) {
 
 // 创建一个新的会话
 exports.openSesssion = function (friendId, clientId, res) {
-  console.log(friendId, clientId);
   SessionModel.create({
     users: [clientId, friendId],
     latestMsg: "",
@@ -258,12 +258,57 @@ exports.querySesssionList = function (clientId, res) {
           });
           return {
             id: item._id,
+            friendId: sessionInfo._id,
             name: sessionInfo.name,
             imgUrl: sessionInfo.imgUrl,
             latestMsg: item.latestMsg,
             time: item.time,
           };
         }),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({
+        code: 500,
+        message: "网络异常",
+      });
+    });
+};
+
+// 发送消息
+exports.sendMessage = function (data, res, connectMap) {
+  MessageModel.create({
+    sendId: data.sendId,
+    receiveId: data.receiveId,
+    sessionId: data.sessionId,
+    message: data.message,
+    type: data.type,
+    time: new Date(),
+    unread: "0",
+  })
+    .then((doc) => {
+      connectMap.get(data.receiveId)?.send(
+        JSON.stringify({
+          sendId: doc.sendId,
+          receiveId: doc.receiveId,
+          sessionId: doc.sessionId,
+          message: doc.message,
+          type: doc.type,
+          time: doc.time,
+        })
+      );
+      res.send({
+        code: 200,
+        message: "发送成功",
+        data: {
+          sendId: doc.sendId,
+          receiveId: doc.receiveId,
+          sessionId: doc.sessionId,
+          message: doc.message,
+          type: doc.type,
+          time: doc.time,
+        },
       });
     })
     .catch((err) => {

@@ -6,37 +6,32 @@
       </view>
       <view class="top-bar-center">名字</view>
     </view>
-    <scroll-view class="chatroom-area" scroll-y>
-      <view class="list-item" v-for="item in chatList">
-        <view v-if="!item.isMy" class="list-other">
+    <view class="chatroom-area">
+      <view class="list-item" v-for="item in messageList">
+        <view v-if="!isMySend(item.sendId)" class="list-other">
           <view class="head-img">
             <image src="@/static/logo.png" mode="scaleToFill" />
           </view>
           <view class="message">
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
+            {{ item.message }}
           </view>
         </view>
         <view v-else class="list-my">
           <view class="message">
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
-            就拉萨看得见flask就flask剪短发了深刻的房间里
+            {{ item.message }}
           </view>
           <view class="head-img">
             <image src="@/static/logo.png" mode="scaleToFill" />
           </view>
         </view>
       </view>
-    </scroll-view>
+    </view>
     <view class="chat-send">
-      <input class="chat-send-input" v-model="sendMessage" />
-
+      <input
+        class="chat-send-input"
+        v-model="inputMessage"
+        @confirm="sendMessage"
+      />
       <view class="chat-add">
         <uni-icons type="plus" :size="25"></uni-icons
       ></view>
@@ -46,38 +41,92 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onReady, onUnload } from "@dcloudio/uni-app";
+import type { ResCommon } from "@/common/types";
+import { useUserStore } from "../../stores/user";
+import { MessageType } from "./enum";
+import { cloneDeep } from "lodash";
+
+interface Message {
+  sendId: string;
+  receiveId: string;
+  message: string;
+  type: string; // 0 文本消息
+  time: string;
+}
 
 let sessionId = "";
+let receiveId = "";
+const userStore = useUserStore();
+let ws: WebSocket;
+
+onReady(() => {
+  ws = new WebSocket("ws://localhost:3000/message");
+  ws.onopen = function () {
+    console.log("ws消息连接成功");
+    ws.send(
+      JSON.stringify({
+        initConnect: "1",
+        sessionId,
+      })
+    );
+  };
+  ws.onerror = function () {
+    console.log("ws消息连接失败");
+  };
+  ws.onmessage = function (event) {
+    console.log(event.data);
+    messageList.value.push(JSON.parse(event.data));
+  };
+});
 onLoad((data: any) => {
   sessionId = data.sessionId;
+  receiveId = data.receiveId;
+  queryMessageList();
+});
+onUnload(() => {
+  ws.close();
 });
 
-const chatList = ref([
-  {
-    id: 1,
-    user: "1",
-    message: "",
-    date: new Date(),
-    isMy: false,
-  },
-  {
-    id: 1,
-    user: "1",
-    message: "",
-    date: new Date(),
-    isMy: true,
-  },
-  {
-    id: 1,
-    user: "1",
-    message: "",
-    date: new Date(),
-    isMy: false,
-  },
-]);
-const sendMessage = ref("");
+const messageList = ref<Message[]>([]);
+const inputMessage = ref("");
 
+function queryMessageList() {
+  uni.request({
+    url: "/api/querymessage",
+    method: "POST",
+    data: {
+      sessionId,
+      receiveId,
+    },
+    header: {
+      "content-type": "application/json",
+    },
+    success: (res) => {
+      const resData = res.data as ResCommon<Message[]>;
+      if (resData.code === 200) {
+        messageList.value = resData.data;
+      }
+    },
+    fail: (err) => {},
+  });
+}
+
+function sendMessage() {
+  ws.send(
+    JSON.stringify({
+      sessionId,
+      sendId: userStore.clientId,
+      receiveId,
+      message: inputMessage.value,
+      type: MessageType.文本,
+    })
+  );
+}
+
+function isMySend(id: string) {
+  return id === userStore.clientId;
+}
 function returnChatList() {
   uni.switchTab({ url: "/pages/index/index" });
 }
@@ -99,6 +148,8 @@ function returnChatList() {
     }
   }
   .chatroom-area {
+    overflow-y: auto;
+    width: 100%;
     position: fixed;
     top: $uni-top-height;
     bottom: $uni-bottom-height;
