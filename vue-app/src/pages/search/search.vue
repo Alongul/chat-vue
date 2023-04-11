@@ -29,7 +29,7 @@
           <button
             class="add-friend"
             type="primary"
-            v-show="item.id !== useStore.clientId"
+            v-show="isHideAdd(item)"
             @click="addFriend(item.id)"
           >
             加好友
@@ -89,10 +89,16 @@ function addFriend(id: string) {
     },
     success: (res) => {
       const resData = res.data as ResCommon<SearchItem[]>;
-      console.log(res.data);
+      if(resData.code ===200){
+        searchStart();
+      }
     },
     fail: (err) => {},
   });
+}
+
+function isHideAdd(item: SearchItem) {
+  return item.id === useStore.clientId || item.isFriend;
 }
 
 function returnBack() {

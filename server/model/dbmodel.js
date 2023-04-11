@@ -13,8 +13,7 @@ const UserModel = db.model("users", SchemaUser);
 
 // 好友表
 const SchemaFriends = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: UserModel },
-  friendId: { type: Schema.Types.ObjectId, ref: UserModel },
+  users: [{ type: Schema.Types.ObjectId, ref: UserModel }],
   state: String, // 0 请求中，1 成为好友
   time: Date,
 });

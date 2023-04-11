@@ -49,7 +49,7 @@ let ws: WebSocket;
 const chatList = ref<SessionItem[]>([]);
 
 onReady(() => {
-  ws = new WebSocket("ws://localhost:3000/session");
+  ws = new WebSocket("ws://192.168.40.226/:3000/session");
   ws.onopen = function () {
     console.log("ws会话连接成功");
     ws.send(

@@ -66,7 +66,23 @@ exports.userLogin = function (user, res) {
 };
 
 // 查找所有用户
-exports.searchUsers = function (key, res) {
+exports.searchUsers = function (key, clientId, res) {
+  // FriendsModel.find({
+  //   users: clientId,
+  // }).then((docs) => {
+  // });
+  // UserModel.aggregate([
+  //   {
+  //     $lookup: {
+  //       from: "FriendsModel",
+  //       localField: "id",
+  //       foreignField: "users",
+  //       as: "friends",
+  //     },
+  //   },
+  // ]).then((doc) => {
+  //   console.log(doc);
+  // });
   UserModel.find({ name: new RegExp(key) })
     .then((docs) => {
       res.send({
@@ -92,8 +108,10 @@ exports.searchUsers = function (key, res) {
 
 // 查找好友
 exports.searchFriends = function (clientId, res) {
-  FriendsModel.find({ state: "1" })
-    .or([{ userId: clientId }, { friendId: clientId }])
+  FriendsModel.find({
+    state: "1",
+    users: clientId,
+  })
     .populate(["userId", "friendId"])
     .then((docs) => {
       res.send({
@@ -130,8 +148,10 @@ exports.searchFriends = function (clientId, res) {
 
 // 查找新朋友
 exports.querynewfriends = function (clientId, res) {
-  FriendsModel.find({ state: "0" })
-    .or([{ userId: clientId }, { friendId: clientId }])
+  FriendsModel.find({
+    state: "0",
+    users: clientId,
+  })
     .populate(["userId", "friendId"])
     .then((docs) => {
       res.send({
@@ -168,28 +188,40 @@ exports.querynewfriends = function (clientId, res) {
 
 // 发起好友请求
 exports.friendReq = function (friendId, userId, res, connectMap) {
-  FriendsModel.create({
-    userId,
-    friendId,
-    state: "0",
-    time: new Date(),
+  FriendsModel.exists({
+    users: {
+      $all: [friendId, userId],
+    },
   })
     .then((doc) => {
-      // connectMap.get(friendId).send({
-      //   message: "新的朋友",
-      //   userId: friendId,
-      //   friendId: userId,
-      // });
       res.send({
         code: 200,
         message: "发起成功",
       });
     })
-    .catch(() => {
-      res.send({
-        code: 500,
-        message: "发起失败",
-      });
+    .catch((err) => {
+      FriendsModel.create({
+        user: [userId, friendId],
+        state: "0",
+        time: new Date(),
+      })
+        .then((doc) => {
+          // connectMap.get(friendId).send({
+          //   message: "新的朋友",
+          //   userId: friendId,
+          //   friendId: userId,
+          // });
+          res.send({
+            code: 200,
+            message: "发起成功",
+          });
+        })
+        .catch(() => {
+          res.send({
+            code: 500,
+            message: "发起失败",
+          });
+        });
     });
 };
 
@@ -242,11 +274,7 @@ exports.openSesssion = function (friendId, clientId, res) {
 // 查询会话列表
 exports.querySesssionList = function (clientId, res) {
   SessionModel.find({
-    users: {
-      $elemMatch: {
-        $eq: clientId,
-      },
-    },
+    users: clientId,
   })
     .populate("users")
     .then((docs) => {

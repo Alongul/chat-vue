@@ -15,7 +15,8 @@ module.exports = function (app, connectMap) {
     dbserver.userLogin(req.body, res);
   });
   app.post("/searchusers", (req, res) => {
-    dbserver.searchUsers(req.body.name, res);
+    // const payload = jwt.verifyToken(req.cookies.token);
+    dbserver.searchUsers(req.body.name, '640ad43b8f5ddbd2196d1f2f', res);
   });
   app.post("/searchfriends", (req, res) => {
     const payload = jwt.verifyToken(req.cookies.token);

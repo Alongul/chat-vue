@@ -62,7 +62,7 @@ const userStore = useUserStore();
 let ws: WebSocket;
 
 onReady(() => {
-  ws = new WebSocket("ws://localhost:3000/message");
+  ws = new WebSocket("ws://192.168.40.226/:3000/message");
   ws.onopen = function () {
     console.log("ws消息连接成功");
     ws.send(
